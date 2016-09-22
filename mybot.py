@@ -7,15 +7,15 @@ import redis
 from slackbot.bot import respond_to, listen_to
 from google import lucky
 
-r = redis.Redis(host="10.0.38.51", port=8889)
+r = redis.Redis()
 
 HI_MSGS = [
     "Bite my shiny metal ass",
     "Kill all humans",
 ]
 
-KEYWORD_PREFIX = "slackbot:eleme:keyworkd:%s"
-ALL_KEYWORDS = "slackbot:eleme:keywords"
+KEYWORD_PREFIX = "slackbot:bot:keyworkd:%s"
+ALL_KEYWORDS = "slackbot:bot:keywords"
 
 
 @respond_to('^hi$', re.IGNORECASE)
