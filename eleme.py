@@ -1,11 +1,4 @@
-#! /usr/bin/env python
 # -*- coding: utf-8 -*-
-# vim:fenc=utf-8
-#
-# Copyright © 2016 WooParadog <guohaochuan@gmail.com>
-#
-# Distributed under terms of the MIT license.
-
 
 import re
 import random
