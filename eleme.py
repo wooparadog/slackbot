@@ -43,7 +43,7 @@ def set_keyword(message, keyword, value):
 
 @listen_to("^!keywords$")
 @respond_to("^!keywords$")
-def all_keywords(message, keyword):
+def all_keywords(message):
     message.send(','.join(r.smembers(ALL_KEYWORDS)))
 
 
