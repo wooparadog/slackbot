@@ -275,7 +275,7 @@ def search(query, tld='com', lang='en', num=10, start=0, stop=None, pause=2.0,
             hashes.add(h)
 
             # Yield the result.
-            yield a
+            yield link, a.text
 
        # End if there are no more results.
         if not soup.find(id='nav'):
@@ -294,8 +294,11 @@ def lucky(keyword, tries=5):
         q = search(keyword)
         while tries:
             tries -= 1
-            r = q.next()
-            if unicode(r.text):
-                return r['href'], r.text
+            link, text = q.next()
+            if text:
+                return link, text
     finally:
         q.close()
+
+if __name__ == '__main__':
+    print lucky('this')
