@@ -41,8 +41,8 @@ def set_keyword(message, keyword, value):
     r.sadd(ALL_KEYWORDS, keyword)
 
 
-@listen_to("^!keywords$")
-@respond_to("^!keywords$")
+@listen_to("^!list keywords$")
+@respond_to("^!list keywords$")
 def all_keywords(message):
     message.send(','.join(r.smembers(ALL_KEYWORDS)))
 
@@ -64,5 +64,5 @@ def google_lucky(message, keyword):
     r = lucky(keyword)
     if r:
         url, desc = r
-        return message.send("{} - {}".format(url, desc))
+        return message.send(u"{} - {}".format(url, desc))
     return message.send("Found nothing")
