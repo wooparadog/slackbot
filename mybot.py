@@ -41,6 +41,14 @@ def set_keyword(message, keyword, value):
     r.sadd(ALL_KEYWORDS, keyword)
 
 
+@respond_to('^!unset (\w+)$')
+@listen_to('^!unset (\w+)$')
+def unset_keyword(message, keyword):
+    r.del(KEYWORD_PREFIX % keyword)
+    message.send("Done")
+    r.srem(ALL_KEYWORDS, keyword)
+
+
 @listen_to("^!list keywords$")
 @respond_to("^!list keywords$")
 def all_keywords(message):
