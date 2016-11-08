@@ -17,6 +17,7 @@ HI_MSGS = [
 KEYWORD_PREFIX = "slackbot:bot:keyworkd:%s"
 ALL_KEYWORDS = "slackbot:bot:keywords"
 
+LINK_STRIPPER = re.compile(" *<(http|https://.*?)> *")
 
 @respond_to('^hi$', re.IGNORECASE)
 def hi(message):
@@ -36,6 +37,7 @@ def keyword_lookup(message, keyword):
 @respond_to('^!set (\w+) (.+)$')
 @listen_to('^!set (\w+) (.+)$')
 def set_keyword(message, keyword, value):
+    LINK_STRIPPER.sub(" \g<1> ", value)
     r.set(KEYWORD_PREFIX % keyword, value)
     message.send("Got it")
     r.sadd(ALL_KEYWORDS, keyword)
