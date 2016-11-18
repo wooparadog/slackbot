@@ -20,4 +20,4 @@ def index():
 if __name__ == '__main__':
     import sys
     args = sys.argv
-    app.run(port=args[1])
+    app.run(host="0.0.0.0", port=args[1])
