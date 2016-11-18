@@ -7,7 +7,9 @@ import redis
 from slackbot.bot import respond_to, listen_to
 from google import lucky
 
-r = redis.Redis()
+from .configs import REDIS_URL
+
+r = redis.Redis.from_url(REDIS_URL)
 
 HI_MSGS = [
     "Bite my shiny metal ass",
