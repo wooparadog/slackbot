@@ -7,7 +7,7 @@ import redis
 from slackbot.bot import respond_to, listen_to
 from google import lucky
 
-from .configs import REDIS_URL
+from configs import REDIS_URL
 
 r = redis.Redis.from_url(REDIS_URL)
 
