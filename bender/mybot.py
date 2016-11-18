@@ -27,8 +27,8 @@ def hi(message):
     message.react('+1')
 
 
-@respond_to('^!(\w+)$')
-@listen_to('^!(\w+)$')
+@respond_to('^!([\w-_/]+)$')
+@listen_to('^!([\w-_/]+)$')
 def keyword_lookup(message, keyword):
     resp = r.get(KEYWORD_PREFIX % keyword)
     if not resp:
@@ -36,8 +36,8 @@ def keyword_lookup(message, keyword):
     message.send(resp)
 
 
-@respond_to('^!set (\w+) (.+)$')
-@listen_to('^!set (\w+) (.+)$')
+@respond_to('^!set ([\w-_/]+) (.+)$')
+@listen_to('^!set ([\w-_/]+) (.+)$')
 def set_keyword(message, keyword, value):
     value = LINK_STRIPPER.sub(" \g<1> ", value)
     r.set(KEYWORD_PREFIX % keyword, value)
