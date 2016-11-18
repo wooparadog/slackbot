@@ -301,4 +301,5 @@ def lucky(keyword, tries=5):
         q.close()
 
 if __name__ == '__main__':
-    print lucky('this')
+    for i in search("how to do redis multi idc"):
+        print i
