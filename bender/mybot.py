@@ -48,7 +48,7 @@ def set_keyword(message, keyword, value):
 @respond_to('^!unset (\w+)$')
 @listen_to('^!unset (\w+)$')
 def unset_keyword(message, keyword):
-    r.del(KEYWORD_PREFIX % keyword)
+    r.delete(KEYWORD_PREFIX % keyword)
     message.send("Done")
     r.srem(ALL_KEYWORDS, keyword)
 
