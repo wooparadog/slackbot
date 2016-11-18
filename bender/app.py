@@ -18,4 +18,6 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run()
+    import sys
+    args = sys.argv
+    app.run(port=args[1])
