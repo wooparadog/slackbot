@@ -1,1 +1,1 @@
-bot: python bender/main.py
+worker: python bender/main.py
