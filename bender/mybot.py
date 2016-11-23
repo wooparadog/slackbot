@@ -5,7 +5,8 @@ import random
 import redis
 
 from slackbot.bot import respond_to, listen_to
-from google import lucky
+from plugins.google import lucky
+from plugins.gif import gif
 
 from configs import REDIS_URL
 
@@ -20,6 +21,7 @@ KEYWORD_PREFIX = "slackbot:bot:keyworkd:%s"
 ALL_KEYWORDS = "slackbot:bot:keywords"
 
 LINK_STRIPPER = re.compile(" *<(http|https://.*?)> *")
+
 
 @respond_to('^hi$', re.IGNORECASE)
 def hi(message):
@@ -77,4 +79,13 @@ def google_lucky(message, keyword):
     if r:
         url, desc = r
         return message.send(u"{} - {}".format(url, desc))
+    return message.send("Found nothing")
+
+
+@listen_to("^!gif (.*)$")
+@respond_to("^!gif (.*)$")
+def gif_search(message, keyword):
+    r = gif(keyword)
+    if r:
+        return message.send(r)
     return message.send("Found nothing")
