@@ -21,14 +21,15 @@ ALL_KEYWORDS = "slackbot:bot:keywords"
 
 LINK_STRIPPER = re.compile(" *<(http|https://.*?)> *")
 
+
 @respond_to('^hi$', re.IGNORECASE)
 def hi(message):
     message.reply(random.choice(HI_MSGS))
     message.react('+1')
 
 
-@respond_to('^!([\w\-_/]+)$')
-@listen_to('^!([\w\-_/]+)$')
+@respond_to('^!([^\s]+)$')
+@listen_to('^!([^\s]+)$')
 def keyword_lookup(message, keyword):
     resp = r.get(KEYWORD_PREFIX % keyword)
     if not resp:
