@@ -36,8 +36,8 @@ def keyword_lookup(message, keyword):
     message.send(resp)
 
 
-@respond_to('^!set ([\w\-_/]+) (.+)$')
-@listen_to('^!set ([\w\-_/]+) (.+)$')
+@respond_to('^!set ([^\s]+) (.+)$')
+@listen_to('^!set ([^\s]+) (.+)$')
 def set_keyword(message, keyword, value):
     value = LINK_STRIPPER.sub(" \g<1> ", value)
     r.set(KEYWORD_PREFIX % keyword, value)
