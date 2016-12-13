@@ -79,3 +79,12 @@ def google_lucky(message, keyword):
         url, desc = r
         return message.send(u"{} - {}".format(url, desc))
     return message.send("Found nothing")
+
+
+@respond_to('^!give ([^\s]+) ([^\s]+)$')
+@listen_to('^!give ([^\s]+) ([^\s]+)$')
+def keyword_lookup(message, person, keyword):
+    resp = r.get(KEYWORD_PREFIX % keyword)
+    if not resp:
+        return message.send("Such word, so 404")
+    message.send("%s %s" % (person, resp))
