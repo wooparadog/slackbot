@@ -19,7 +19,7 @@ HI_MSGS = [
 KEYWORD_PREFIX = "slackbot:bot:keyworkd:%s"
 ALL_KEYWORDS = "slackbot:bot:keywords"
 
-LINK_STRIPPER = re.compile(" *<(http|https://.*?)> *")
+LINK_STRIPPER = re.compile("<((http|https)://.*?)>")
 
 
 @respond_to('^hi$', re.IGNORECASE)
