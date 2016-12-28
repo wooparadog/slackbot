@@ -60,8 +60,8 @@ def all_keywords(message):
     message.send(','.join(r.smembers(ALL_KEYWORDS)))
 
 
-@listen_to("^!list keywords (\w+)$")
-@respond_to("^!list keywords (\w+)$")
+@listen_to("^!list keywords ([^\s]+)$")
+@respond_to("^!list keywords ([^\s]+)$")
 def all_keywords(message, prefix):
     keys = [k for k in r.smembers(ALL_KEYWORDS) if k.startswith(prefix)]
     message.send('\n'.join(keys))
