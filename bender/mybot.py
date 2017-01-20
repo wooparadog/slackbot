@@ -37,8 +37,8 @@ def keyword_lookup(message, keyword):
     message.send(resp)
 
 
-@respond_to('^!set ([^\s]+) (.+)$')
-@listen_to('^!set ([^\s]+) (.+)$')
+@respond_to('^!set +([^\s]+) +(.+)$')
+@listen_to('^!set +([^\s]+) +(.+)$')
 def set_keyword(message, keyword, value):
     value = LINK_STRIPPER.sub(" \g<1> ", value)
     r.set(KEYWORD_PREFIX % keyword, value)
@@ -46,22 +46,22 @@ def set_keyword(message, keyword, value):
     r.sadd(ALL_KEYWORDS, keyword)
 
 
-@respond_to('^!unset ([^\s]+)$')
-@listen_to('^!unset ([^\s]+)$')
+@respond_to('^!unset +([^\s]+)$')
+@listen_to('^!unset +([^\s]+)$')
 def unset_keyword(message, keyword):
     r.delete(KEYWORD_PREFIX % keyword)
     message.send("Done")
     r.srem(ALL_KEYWORDS, keyword)
 
 
-@listen_to("^!list keywords$")
-@respond_to("^!list keywords$")
+@listen_to("^!list +keywords$")
+@respond_to("^!list +keywords$")
 def all_keywords(message):
     message.send(','.join(r.smembers(ALL_KEYWORDS)))
 
 
-@listen_to("^!list keywords ([^\s]+)$")
-@respond_to("^!list keywords ([^\s]+)$")
+@listen_to("^!list +keywords +([^\s]+)$")
+@respond_to("^!list +keywords +([^\s]+)$")
 def all_keywords(message, prefix):
     keys = [k for k in r.smembers(ALL_KEYWORDS) if k.startswith(prefix)]
     message.send('\n'.join(keys))
@@ -72,8 +72,8 @@ def love(message):
     message.reply('I love you too!')
 
 
-@listen_to("^!google (.*)$")
-@respond_to("^!google (.*)$")
+@listen_to("^!google +(.*)$")
+@respond_to("^!google +(.*)$")
 def google(message, keyword):
     message.send("http://lmgtfy.com/?q={}".format("+".join(keyword.split())))
 
@@ -88,8 +88,8 @@ def google_lucky(message, keyword):
     return message.send("Found nothing")
 
 
-@respond_to('^!give ([^\s]+) ([^\s]+)$')
-@listen_to('^!give ([^\s]+) ([^\s]+)$')
+@respond_to('^!give ([^\s]+) +([^\s]+)$')
+@listen_to('^!give ([^\s]+) +([^\s]+)$')
 def keyword_lookup(message, person, keyword):
     resp = r.get(KEYWORD_PREFIX % keyword)
     if not resp:
