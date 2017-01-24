@@ -103,4 +103,4 @@ def roll_keyword(message, keyword):
     resp = r.get(KEYWORD_PREFIX % keyword)
     if not resp:
         return message.send("Such word, so 404")
-    return random.choice(resp.split())
+    message.send(random.choice(resp.split()))
