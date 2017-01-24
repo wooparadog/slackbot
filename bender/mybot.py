@@ -98,6 +98,7 @@ def keyword_lookup(message, person, keyword):
 
 
 @listen_to("^!roll ([^\s]+)$")
+@respond_to("^!roll ([^\s]+)$")
 def roll_keyword(message, keyword):
     resp = r.get(KEYWORD_PREFIX % keyword)
     if not resp:
