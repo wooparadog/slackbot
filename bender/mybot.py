@@ -114,4 +114,8 @@ def search_keyword(message, keyword):
     for word in all_keywords:
         if keyword in word:
             result.append(word)
-    message.send(",".join(result))
+    if result:
+        message.send(",".join(result))
+    else:
+        message.send("Not found")
+
