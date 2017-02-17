@@ -90,7 +90,7 @@ def google_lucky(message, keyword):
 
 @respond_to('^!give ([^\s]+) +([^\s]+)$')
 @listen_to('^!give ([^\s]+) +([^\s]+)$')
-def keyword_lookup(message, person, keyword):
+def give_person_keyword(message, person, keyword):
     resp = r.get(KEYWORD_PREFIX % keyword)
     if not resp:
         return message.send("Such word, so 404")
@@ -104,3 +104,14 @@ def roll_keyword(message, keyword):
     if not resp:
         return message.send("Such word, so 404")
     message.send(random.choice(resp.split()))
+
+
+@listen_to("^!s ([^\s]+)$")
+@respond_to("^!s ([^\s]+)$")
+def search_keyword(message, keyword):
+    all_keywords = r.smembers(ALL_KEYWORDS)
+    result = []
+    for word in all_keywords:
+        if keyword in word:
+            result.append(word)
+    message.send(",".join(result))
