@@ -31,6 +31,8 @@ def hi(message):
 @respond_to('^!([^\s]+)$')
 @listen_to('^!([^\s]+)$')
 def keyword_lookup(message, keyword):
+    if keyword == 'help':
+        return
     resp = r.get(KEYWORD_PREFIX % keyword)
     if not resp:
         return message.send("Such word, so 404")
@@ -100,21 +102,23 @@ def give_person_keyword(message, person, keyword):
 @listen_to("^!help$")
 @respond_to("^!help$")
 def help_message(message):
-    message.send("""
-    - hi: say hi
-    - !<keyword>: return content identified by keyword
-    - !set <keyword> <content>: set keyword content
-    - !unset <keyword>: unset keyword
-    - !list keywords: list all keywords
-    - !list keywords <prefix>: list all keywords starts with <prefix>
-    - !love: love you too
-    - !google <keyword>: give lmgtfy link to google keyword
-    - !g <keyword>: Google I'm feeling lucky
-    - !give @people <keyword>: give @people content of <keyword>
-    - !help: this msg
-    - !roll <keyword>: pick an option from <keyword>, seperated by space
-    - !s <keyword>: search keyword
-    """)
+    message.send("""Hello there:
+
+```
+- hi: say hi
+- !<keyword>: return content identified by keyword
+- !set <keyword> <content>: set keyword content
+- !unset <keyword>: unset keyword
+- !list keywords: list all keywords
+- !list keywords <prefix>: list all keywords starts with <prefix>
+- !love: love you too
+- !google <keyword>: give lmgtfy link to google keyword
+- !g <keyword>: Google I'm feeling lucky
+- !give @people <keyword>: give @people content of <keyword>
+- !help: this msg
+- !roll <keyword>: pick an option from <keyword>, seperated by space
+- !s <keyword>: search keyword
+```""")
 
 
 @listen_to("^!roll ([^\s]+)$")
