@@ -99,7 +99,7 @@ def give_person_keyword(message, person, keyword):
 
 @listen_to("^!help$")
 @respond_to("^!help$")
-def help_message(message, keyword):
+def help_message(message):
     message.send("""
     - hi: say hi
     - !<keyword>: return content identified by keyword
