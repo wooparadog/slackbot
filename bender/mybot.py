@@ -97,6 +97,26 @@ def give_person_keyword(message, person, keyword):
     message.send("%s %s" % (person, resp))
 
 
+@listen_to("^!help$")
+@respond_to("^!help$")
+def help_message(message, keyword):
+    message.send("""
+    - hi: say hi
+    - !<keyword>: return content identified by keyword
+    - !set <keyword> <content>: set keyword content
+    - !unset <keyword>: unset keyword
+    - !list keywords: list all keywords
+    - !list keywords <prefix>: list all keywords starts with <prefix>
+    - !love: love you too
+    - !google <keyword>: give lmgtfy link to google keyword
+    - !g <keyword>: Google I'm feeling lucky
+    - !give @people <keyword>: give @people content of <keyword>
+    - !help: this msg
+    - !roll <keyword>: pick an option from <keyword>, seperated by space
+    - !s <keyword>: search keyword
+    """)
+
+
 @listen_to("^!roll ([^\s]+)$")
 @respond_to("^!roll ([^\s]+)$")
 def roll_keyword(message, keyword):
@@ -118,4 +138,3 @@ def search_keyword(message, keyword):
         message.send(",".join(result))
     else:
         message.send("Not found")
-
