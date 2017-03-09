@@ -12,8 +12,10 @@ from configs import REDIS_URL
 r = redis.Redis.from_url(REDIS_URL)
 
 HI_MSGS = [
-    "Bite my shiny metal ass",
-    "Kill all humans",
+    "hello to you",
+    "cheers",
+    "howdy",
+    "greatings",
 ]
 
 KEYWORD_PREFIX = "slackbot:bot:keyworkd:%s"
@@ -25,7 +27,7 @@ LINK_STRIPPER = re.compile("<((http|https)://.*?)>")
 @respond_to('^hi$', re.IGNORECASE)
 def hi(message):
     message.reply(random.choice(HI_MSGS))
-    message.react('+1')
+    message.react('doge')
 
 
 @respond_to('^!([^\s]+)$')
