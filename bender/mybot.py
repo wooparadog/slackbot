@@ -2,14 +2,12 @@
 
 import re
 import random
-import redis
 
 from slackbot.bot import respond_to, listen_to
 from google import lucky
+from bender.service import on_call_service
+from dal import r
 
-from configs import REDIS_URL
-
-r = redis.Redis.from_url(REDIS_URL)
 
 HI_MSGS = [
     "hello to you",
@@ -20,7 +18,6 @@ HI_MSGS = [
 
 KEYWORD_PREFIX = "slackbot:bot:keyworkd:%s"
 ALL_KEYWORDS = "slackbot:bot:keywords"
-
 LINK_STRIPPER = re.compile("<((http|https)://.*?)>")
 
 
@@ -66,7 +63,7 @@ def all_keywords(message):
 
 @listen_to("^!list +keywords +([^\s]+)$")
 @respond_to("^!list +keywords +([^\s]+)$")
-def all_keywords(message, prefix):
+def all_keywords_with_prefix(message, prefix):
     keys = [k for k in r.smembers(ALL_KEYWORDS) if k.startswith(prefix)]
     message.send('\n'.join(keys))
 
@@ -120,6 +117,10 @@ def help_message(message):
 - !help: this msg
 - !roll <keyword>: pick an option from <keyword>, seperated by space
 - !s <keyword>: search keyword
+- !oncall-add <team> <contact info>: add contact to team's on call list
+- !oncall-get <team>: get current week's oncall contact
+- !oncall-clear <team>: clear oncall team entirely
+- !oncall: get EVERYONE!!!!!!!!!!!!
 ```""")
 
 
@@ -144,3 +145,49 @@ def search_keyword(message, keyword):
         message.send(",".join(result))
     else:
         message.send("Not found")
+
+
+@listen_to("^!oncall-add ([^\s]+) +(.+)$")
+@respond_to("^!oncall-add ([^\s]+) +(.+)$")
+def add_oncall(message, team, oncall):
+    if isinstance(oncall, unicode):
+        oncall = oncall.encode('utf8')
+    if on_call_service.add_oncall(team, oncall):
+        message.send("{} is added to oncall list of {}".format(oncall, team))
+    else:
+        message.send("{} is added to oncall list of {}".format(oncall, team))
+
+
+@listen_to("^!oncall-get ([^\s]+)$")
+@respond_to("^!oncall-get ([^\s]+)$")
+def get_oncall(message, team):
+    on_call = on_call_service.get_oncall(team)
+    if on_call:
+        all_members = on_call_service.get_other_oncalls(team)
+        return message.send(
+            "On call for {} is:\n *{}*\nOther oncalls:\n{}".format(
+                team,
+                on_call,
+                '\n'.join(map(lambda x: '*%s*' % x, all_members))
+                ))
+    else:
+        return message.send("No available On Call for {}".format(team))
+
+
+@listen_to("^!oncall-clear ([^\s]+)$")
+@respond_to("^!oncall-clear ([^\s]+)$")
+def clear_oncall_team(message, team):
+    on_call_service.clear_oncall_team(team)
+    return message.send("Cleared: {}".format(team))
+
+
+@respond_to("^!oncall$")
+@listen_to("^!oncall$")
+def get_all_oncalls(message):
+    return message.send(
+        '本周 Oncall: \n' +
+        '\n'.join(
+            '{}: *{}*'.format(team, oncall)
+            for team, oncall in on_call_service.get_everyone()
+            )
+        )
