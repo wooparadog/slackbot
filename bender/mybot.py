@@ -121,6 +121,7 @@ def help_message(message):
 - !oncall-get <team>: get current week's oncall contact
 - !oncall-clear <team>: clear oncall team entirely
 - !oncall: get EVERYONE!!!!!!!!!!!!
+- !oncall-skip <team>: skip current oncall, let the next one on.
 ```""")
 
 
@@ -189,5 +190,17 @@ def get_all_oncalls(message):
         '\n'.join(
             '{}: *{}*'.format(team, oncall)
             for team, oncall in on_call_service.get_everyone()
+            )
+        )
+
+
+@listen_to("^!oncall-skip ([^\s]+)$")
+@respond_to("^!oncall-skip ([^\s]+)$")
+def skip_oncall(message, team):
+    current_oncall = on_call_service.get_oncall(team)
+    on_call_service.skip_oncall(team)
+    return message.send("Skipping current oncall: {}, new one is: *{}*".format(
+            current_oncall,
+            on_call_service.get_oncall(team)
             )
         )
