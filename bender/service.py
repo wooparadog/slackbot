@@ -56,8 +56,8 @@ class OnCallService(object):
     def skip_oncall(self, team):
         current = self.get_oncall(team)
         if current:
-            r.zincrby(ONCALL_LIST_PREFIX % team, current, -random.randint(1,
-                                                                          10))
+            r.zincrby(ONCALL_LIST_PREFIX % team, current, random.randint(1,
+                                                                         10))
 
 
 on_call_service = OnCallService()
