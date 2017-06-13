@@ -117,6 +117,7 @@ def help_message(message):
 - !help: this msg
 - !roll <keyword>: pick an option from <keyword>, seperated by space
 - !s <keyword>: search keyword
+- !a <keyword>: search keyword and show them all at once
 - !oncall-add <team> <contact info>: add contact to team's on call list
 - !oncall-get <team>: get current week's oncall contact
 - !oncall-clear <team>: clear oncall team entirely
