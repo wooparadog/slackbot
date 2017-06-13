@@ -134,6 +134,21 @@ def roll_keyword(message, keyword):
     message.send(random.choice(resp.split()))
 
 
+@listen_to("^!a ([^\s]+)$")
+@respond_to("^!a ([^\s]+)$")
+def display_all_keywords(message, keyword):
+    all_keywords = r.smembers(ALL_KEYWORDS)
+    result = []
+    for word in all_keywords:
+        if keyword in word:
+            result.append(word)
+    if result:
+        texts = r.mget(KEYWORD_PREFIX % w for w in result)
+        message.send("\n  ------\n\n".join(texts))
+    else:
+        message.send("Not found")
+
+
 @listen_to("^!s ([^\s]+)$")
 @respond_to("^!s ([^\s]+)$")
 def search_keyword(message, keyword):
