@@ -144,7 +144,9 @@ def display_all_keywords(message, keyword):
             result.append(word)
     if result:
         texts = zip(result, r.mget(KEYWORD_PREFIX % w for w in result))
-        message.send("".join("---- %s ----\n\n%s\n\n" % seg for seg in texts))
+        message.send(
+            "".join("---- %s ----\n\n%s\n\n\n" % seg for seg in texts)
+            )
     else:
         message.send("Not found")
 
