@@ -133,14 +133,14 @@ def roll_keyword(message, keyword):
     message.send(random.choice(resp.split()))
 
 
-@listen_to("^!a ([^\s]+)$")
-@respond_to("^!a ([^\s]+)$")
-def display_all_keywords(message, keyword):
+@listen_to("^!a (.+)$")
+@respond_to("^!a (.+)$")
+def display_all_keywords(message, keywords):
     """search keyword and show them all at once."""
     all_keywords = r.smembers(ALL_KEYWORDS)
     result = []
     for word in all_keywords:
-        if keyword in word:
+        if all(keyword in word for keyword in keywords.split()):
             result.append(word)
     if result:
         texts = zip(result, r.mget(KEYWORD_PREFIX % w for w in result))
