@@ -26,7 +26,7 @@ VOTE_WORDS = "slackbot:bot:vote:words"
 
 RESERVED_WORD = {
     'help',
-    'get-vote',
+    'vote-result',
     }
 
 
