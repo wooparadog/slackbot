@@ -21,6 +21,25 @@ HI_MSGS = [
 KEYWORD_PREFIX = "slackbot:bot:keyworkd:%s"
 ALL_KEYWORDS = "slackbot:bot:keywords"
 LINK_STRIPPER = re.compile("<((http|https)://.*?)>")
+VOTE_PREFIX = "slackbot:bot:vote:%s"
+VOTE_WORDS = "slackbot:bot:vote:words"
+
+
+@listen_to('^!vote ([^\s]+)$')
+def vote(message, keyword):
+    """Vote a keyword"""
+    r.sadd(VOTE_WORDS, keyword)
+    count = r.incr(VOTE_PREFIX.format(keyword))
+    message.send('{} is voted to {}'.format(keyword, count))
+
+
+@listen_to('^!get-vote$')
+def show_all_vote(message):
+    """Show all voted keywords"""
+    keywords = r.smembers(VOTE_WORDS)
+    counts = r.mget(keywords)
+    counts = sorted(zip(keywords, map(lambda x: x or 0, counts)))
+    message.send('{} is voted to {}'.format(k, c) for k,c in counts)
 
 
 @respond_to('^hi$', re.IGNORECASE)
