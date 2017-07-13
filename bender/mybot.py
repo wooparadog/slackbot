@@ -21,7 +21,7 @@ HI_MSGS = [
 KEYWORD_PREFIX = "slackbot:bot:keyworkd:%s"
 ALL_KEYWORDS = "slackbot:bot:keywords"
 LINK_STRIPPER = re.compile("<((http|https)://.*?)>")
-VOTE_PREFIX = "slackbot:bot:vote:%s"
+VOTE_PREFIX = "slackbot:bot:vote:{}"
 VOTE_WORDS = "slackbot:bot:vote:words"
 
 RESERVED_WORD = {
