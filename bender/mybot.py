@@ -37,7 +37,7 @@ def vote(message, keyword):
 def show_all_vote(message):
     """Show all voted keywords"""
     keywords = r.smembers(VOTE_WORDS)
-    counts = r.mget(keywords)
+    counts = r.mget(VOTE_PREFIX.format(keyword) for keyword in keywords)
     counts = sorted(zip(keywords, map(lambda x: x or 0, counts)))
     message.send(
         '\n'.join('{} is voted to {}'.format(k, c) for k, c in counts)
