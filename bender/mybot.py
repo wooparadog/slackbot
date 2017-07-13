@@ -39,7 +39,9 @@ def show_all_vote(message):
     keywords = r.smembers(VOTE_WORDS)
     counts = r.mget(keywords)
     counts = sorted(zip(keywords, map(lambda x: x or 0, counts)))
-    message.send('{} is voted to {}'.format(k, c) for k,c in counts)
+    message.send(
+        '\n'.join('{} is voted to {}'.format(k, c) for k, c in counts)
+        )
 
 
 @respond_to('^hi$', re.IGNORECASE)
