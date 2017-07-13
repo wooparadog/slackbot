@@ -37,6 +37,14 @@ def listen_and_response_to(pattern):
     return wrapper
 
 
+@listen_and_response_to('^!vote-rm ([^\s]+)$')
+def rm_vote(message, keyword):
+    """Delete a vote keyword"""
+    r.srem(VOTE_WORDS, keyword)
+    r.delete(VOTE_PREFIX.format(keyword))
+    message.send('{} is deleted'.format(keyword))
+
+
 @listen_and_response_to('^!vote ([^\s]+)$')
 def vote(message, keyword):
     """Vote a keyword"""
@@ -45,7 +53,7 @@ def vote(message, keyword):
     message.send('{} is voted to {}'.format(keyword, count))
 
 
-@listen_and_response_to('^!get-vote$')
+@listen_and_response_to('^!vote-result$')
 def show_all_vote(message):
     """Show all voted keywords"""
     keywords = r.smembers(VOTE_WORDS)
