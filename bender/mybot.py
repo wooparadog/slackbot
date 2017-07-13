@@ -24,8 +24,20 @@ LINK_STRIPPER = re.compile("<((http|https)://.*?)>")
 VOTE_PREFIX = "slackbot:bot:vote:%s"
 VOTE_WORDS = "slackbot:bot:vote:words"
 
+RESERVED_WORD = {
+    'help',
+    'get-vote',
+    }
 
-@listen_to('^!vote ([^\s]+)$')
+
+def listen_and_response_to(pattern):
+    def wrapper(func):
+        func = listen_to(pattern)(func)
+        return respond_to(pattern)(func)
+    return wrapper
+
+
+@listen_and_response_to('^!vote ([^\s]+)$')
 def vote(message, keyword):
     """Vote a keyword"""
     r.sadd(VOTE_WORDS, keyword)
@@ -33,7 +45,7 @@ def vote(message, keyword):
     message.send('{} is voted to {}'.format(keyword, count))
 
 
-@listen_to('^!get-vote$')
+@listen_and_response_to('^!get-vote$')
 def show_all_vote(message):
     """Show all voted keywords"""
     keywords = r.smembers(VOTE_WORDS)
@@ -51,11 +63,10 @@ def hi(message):
     message.react('doge')
 
 
-@respond_to('^!([^\s]+)$')
-@listen_to('^!([^\s]+)$')
+@listen_and_response_to('^!([^\s]+)$')
 def keyword_lookup(message, keyword):
     """return content identified by keyword."""
-    if keyword == 'help':
+    if keyword in RESERVED_WORD:
         return
     resp = r.get(KEYWORD_PREFIX % keyword)
     if not resp:
@@ -63,8 +74,7 @@ def keyword_lookup(message, keyword):
     message.send(resp)
 
 
-@respond_to('^!set +([^\s]+) +(.+)$')
-@listen_to('^!set +([^\s]+) +(.+)$')
+@listen_and_response_to('^!set +([^\s]+) +(.+)$')
 def set_keyword(message, keyword, value):
     """set keyword content."""
     value = LINK_STRIPPER.sub(" \g<1> ", value)
@@ -73,8 +83,7 @@ def set_keyword(message, keyword, value):
     r.sadd(ALL_KEYWORDS, keyword)
 
 
-@respond_to('^!unset +([^\s]+)$')
-@listen_to('^!unset +([^\s]+)$')
+@listen_and_response_to('^!unset +([^\s]+)$')
 def unset_keyword(message, keyword):
     """unset keyword."""
     r.delete(KEYWORD_PREFIX % keyword)
@@ -82,15 +91,13 @@ def unset_keyword(message, keyword):
     r.srem(ALL_KEYWORDS, keyword)
 
 
-@listen_to("^!list +keywords$")
-@respond_to("^!list +keywords$")
+@listen_and_response_to("^!list +keywords$")
 def all_keywords(message):
     """list all keywords."""
     message.send(','.join(r.smembers(ALL_KEYWORDS)))
 
 
-@listen_to("^!list +keywords +([^\s]+)$")
-@respond_to("^!list +keywords +([^\s]+)$")
+@listen_and_response_to("^!list +keywords +([^\s]+)$")
 def all_keywords_with_prefix(message, prefix):
     """list all keywords starts with <prefix>."""
     keys = [k for k in r.smembers(ALL_KEYWORDS) if k.startswith(prefix)]
@@ -103,15 +110,13 @@ def love(message):
     message.reply('I love you too!')
 
 
-@listen_to("^!google +(.*)$")
-@respond_to("^!google +(.*)$")
+@listen_and_response_to("^!google +(.*)$")
 def google(message, keyword):
     """give lmgtfy link to google keyword."""
     message.send("http://lmgtfy.com/?q={}".format("+".join(keyword.split())))
 
 
-@listen_to("^!g (.*)$")
-@respond_to("^!g (.*)$")
+@listen_and_response_to("^!g (.*)$")
 def google_lucky(message, keyword):
     """Google I'm feeling lucky."""
     r = lucky(keyword)
@@ -121,8 +126,7 @@ def google_lucky(message, keyword):
     return message.send("Found nothing")
 
 
-@respond_to('^!give ([^\s]+) +([^\s]+)$')
-@listen_to('^!give ([^\s]+) +([^\s]+)$')
+@listen_and_response_to('^!give ([^\s]+) +([^\s]+)$')
 def give_person_keyword(message, person, keyword):
     """give @people content of <keyword>."""
     resp = r.get(KEYWORD_PREFIX % keyword)
@@ -131,8 +135,7 @@ def give_person_keyword(message, person, keyword):
     message.send("%s %s" % (person, resp))
 
 
-@listen_to("^!help$")
-@respond_to("^!help$")
+@listen_and_response_to("^!help$")
 def help_message(message):
     """Print help message"""
     handlers = sorted(PluginsManager.commands['listen_to'].items(),
@@ -144,8 +147,7 @@ def help_message(message):
         ) + "```")
 
 
-@listen_to("^!roll ([^\s]+)$")
-@respond_to("^!roll ([^\s]+)$")
+@listen_and_response_to("^!roll ([^\s]+)$")
 def roll_keyword(message, keyword):
     """pick an option from <keyword>, seperated by space."""
     resp = r.get(KEYWORD_PREFIX % keyword)
@@ -154,8 +156,7 @@ def roll_keyword(message, keyword):
     message.send(random.choice(resp.split()))
 
 
-@listen_to("^!a (.+)$")
-@respond_to("^!a (.+)$")
+@listen_and_response_to("^!a (.+)$")
 def display_all_keywords(message, keywords):
     """search keyword and show them all at once."""
     all_keywords = r.smembers(ALL_KEYWORDS)
@@ -172,8 +173,7 @@ def display_all_keywords(message, keywords):
         message.send("Not found")
 
 
-@listen_to("^!s ([^\s]+)$")
-@respond_to("^!s ([^\s]+)$")
+@listen_and_response_to("^!s ([^\s]+)$")
 def search_keyword(message, keyword):
     """search keyword."""
     all_keywords = r.smembers(ALL_KEYWORDS)
@@ -187,8 +187,7 @@ def search_keyword(message, keyword):
         message.send("Not found")
 
 
-@listen_to("^!oncall-add ([^\s]+) +(.+)$")
-@respond_to("^!oncall-add ([^\s]+) +(.+)$")
+@listen_and_response_to("^!oncall-add ([^\s]+) +(.+)$")
 def add_oncall(message, team, oncall):
     """add contact to team's on call list."""
     if isinstance(oncall, unicode):
@@ -199,8 +198,7 @@ def add_oncall(message, team, oncall):
         message.send("{} is added to oncall list of {}".format(oncall, team))
 
 
-@listen_to("^!oncall-get ([^\s]+)$")
-@respond_to("^!oncall-get ([^\s]+)$")
+@listen_and_response_to("^!oncall-get ([^\s]+)$")
 def get_oncall(message, team):
     """get current week's oncall contact."""
     on_call = on_call_service.get_oncall(team)
@@ -216,16 +214,14 @@ def get_oncall(message, team):
         return message.send("No available On Call for {}".format(team))
 
 
-@listen_to("^!oncall-clear ([^\s]+)$")
-@respond_to("^!oncall-clear ([^\s]+)$")
+@listen_and_response_to("^!oncall-clear ([^\s]+)$")
 def clear_oncall_team(message, team):
     """clear oncall team entirely."""
     on_call_service.clear_oncall_team(team)
     return message.send("Cleared: {}".format(team))
 
 
-@respond_to("^!oncall$")
-@listen_to("^!oncall$")
+@listen_and_response_to("^!oncall$")
 def get_all_oncalls(message):
     """get EVERYONE!!!!!!!!!!!!."""
     return message.send(
@@ -237,14 +233,12 @@ def get_all_oncalls(message):
         )
 
 
-@listen_to("^!oncall-skip ([^\s]+)$")
-@respond_to("^!oncall-skip ([^\s]+)$")
+@listen_and_response_to("^!oncall-skip ([^\s]+)$")
 def skip_oncall(message, team):
     """skip current oncall, let the next one on.."""
     current_oncall = on_call_service.get_oncall(team)
     on_call_service.skip_oncall(team)
     return message.send("Skipping current oncall: {}, new one is: *{}*".format(
-            current_oncall,
-            on_call_service.get_oncall(team)
-            )
-        )
+        current_oncall,
+        on_call_service.get_oncall(team)
+        ))
