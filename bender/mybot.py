@@ -3,13 +3,14 @@
 import re
 import random
 
+import Levenshtein
+
 from slackbot.bot import respond_to, listen_to
 from slackbot.manager import PluginsManager
 
 from google import lucky
 from bender.service import on_call_service
 from dal import r
-
 
 HI_MSGS = [
     "hello to you",
@@ -62,6 +63,19 @@ def show_all_vote(message):
     message.send(
         '\n'.join('{} is voted to {}'.format(k, c) for k, c in counts)
         )
+
+
+@respond_to('^!ask (.*)$')
+def search_content(message, words):
+    """search all related contents."""
+    hits = []
+    for key in r.smembers(ALL_KEYWORDS):
+        if Levenshtein.ratio(words, key) > 0.8:
+            hits.append("---- %s ----\n\n%s\n\n\n" % (
+                key, r.get(KEYWORD_PREFIX % key))
+            )
+    if hits:
+        message.reply("".join(hits))
 
 
 @respond_to('^hi$', re.IGNORECASE)
