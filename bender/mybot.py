@@ -65,7 +65,7 @@ def show_all_vote(message):
         )
 
 
-@respond_to('^!ask (.*)$')
+@respond_to('^(.*)$')
 def search_content(message, words):
     """search all related contents."""
     hits = []
