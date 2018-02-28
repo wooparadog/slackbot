@@ -43,7 +43,7 @@ class OnCallService(object):
         return all_members
 
     def get_other_oncalls(self, team):
-        return self.get_all_oncalls(team)[:-1]
+        return self.get_all_oncalls(team)[1:]
 
     def clear_oncall_team(self, team):
         r.delete(ONCALL_LIST_PREFIX % team)
